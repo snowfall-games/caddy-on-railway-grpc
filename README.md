@@ -1,6 +1,7 @@
-# Static Website on Railway using Caddy Server
-This template deploys a static website on [Railway](https://railway.app/?referralCode=alphasec) using Caddy server. For a step-by-step guide, see [this](https://alphasec.io/how-to-deploy-a-static-website-with-caddy-on-railway/) post, or click the button below.
+# gRPC Reverse Proxy on Railway using Caddy Server
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/TETV8z?referralCode=alphasec)
+This template deploys a gRPC reverse proxy on [Railway](https://railway.app/template/wlxtbV?referralCode=aeQMt9) using Caddy server.
 
-By default, the `site/` directory gets deployed as a static site. This can be modified by changing the Dockerfile.
+[![Deploy on Railway](https://railway.com/button.svg)](https://railway.app/template/wlxtbV?referralCode=aeQMt9)
+
+By default, the `Caddyfile` is configured to reverse proxy gRPC requests. Ensure that `SERVICE_URL` and `PORT` are set in the environment variables.
