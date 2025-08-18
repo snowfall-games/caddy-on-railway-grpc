@@ -1,4 +1,6 @@
 horde.snowfall.games {
+	auto_https off
+
 	# gRPC traffic
 	@grpc header_regexp grpc Content-Type ^application/grpc
 	
