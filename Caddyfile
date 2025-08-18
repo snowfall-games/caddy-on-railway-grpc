@@ -23,10 +23,8 @@ horde.snowfall.games:443 {
 	}
 
 	route {
-		# Health first so it never falls through
-		handle_path /health {
-			respond "OK" 200
-		}
+		# Health first so it never falls through (exact path)
+		respond /health "OK" 200
 
 		# gRPC → h2c upstream (no TLS between Caddy and app)
 		handle @grpc {
