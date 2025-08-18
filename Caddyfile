@@ -6,7 +6,7 @@
 	debug
 }
 
-horde.snowfall.games:443 {
+horde.snowfall.games:{$PORT} {
 	# Health check
 	respond /health "Caddy is working" 200
 
@@ -22,20 +22,21 @@ horde.snowfall.games:443 {
 	# Detect gRPC requests
 	@grpc {
 		header Content-Type application/grpc*
-		protocol grpc
 	}
 
 	# gRPC over h2c upstream
 	handle @grpc {
-		reverse_proxy snowfall-horde.railway.internal:5002 {
+		reverse_proxy {$HORDE_HOST}:5002 {
 			transport http {
-				versions h2c 2
+				versions h2c
+				keepalive off
 			}
+			flush_interval -1
 		}
 	}
 
 	# HTTP upstream
 	handle {
-		reverse_proxy snowfall-horde.railway.internal:5000
+		reverse_proxy {$HORDE_HOST}:5000
 	}
 }
