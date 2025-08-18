@@ -1,4 +1,4 @@
-:${PORT} {
+:{$PORT} {
 	# Terminate TLS using the Cloudflare Origin cert
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
