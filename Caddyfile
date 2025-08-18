@@ -23,7 +23,6 @@ horde.snowfall.games:443 {
 	# gRPC matcher (HTTP/2 requests with gRPC content-type)
 	@grpc {
 		header Content-Type *application/grpc*
-		protocol h2
 	}
 
 	# gRPC → h2c upstream (no TLS between Caddy and app)
