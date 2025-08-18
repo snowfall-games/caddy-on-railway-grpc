@@ -1,7 +1,7 @@
 {
 	# h1 + h2 is enough on the public listener; h2c is for cleartext listeners.
 	servers {
-		protocols h1 h2
+		protocols h1 h2 h2c
 	}
 	debug
 }
