@@ -32,6 +32,8 @@ horde.snowfall.games:443 {
 			transport http {
 				versions h2c
 			}
+
+			debug
 			# TE is HTTP/1.1-specific; not needed for h2
 			flush_interval -1
 		}
