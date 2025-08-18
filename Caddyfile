@@ -22,6 +22,7 @@ horde.snowfall.games:{$PORT} {
 	# Detect gRPC requests
 	@grpc {
 		header Content-Type application/grpc*
+		header TE trailers
 	}
 
 	# gRPC over h2c upstream
@@ -29,14 +30,18 @@ horde.snowfall.games:{$PORT} {
 		reverse_proxy {$HORDE_HOST}:5002 {
 			transport http {
 				versions h2c
-				keepalive off
 			}
+			# Ensure upstream sees proper authority/host for gRPC
+			header_up Host {upstream_hostport}
+			header_up TE trailers
 			flush_interval -1
 		}
 	}
 
 	# HTTP upstream
 	handle {
-		reverse_proxy {$HORDE_HOST}:5000
+		reverse_proxy {$HORDE_HOST}:5000 {
+			header_up Host {upstream_hostport}
+		}
 	}
 }
