@@ -10,8 +10,10 @@ horde.snowfall.games:443 {
 	# Terminate TLS using the Cloudflare Origin cert
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
-	# Simple health check
-	respond /health "Caddy is working" 200
+	# Simple health check (plain text)
+	handle_path /health {
+		respond "OK" 200
+	}
 
 	log {
 		output stdout
