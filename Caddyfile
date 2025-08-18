@@ -6,7 +6,7 @@
 	debug
 }
 
-horde.snowfall.games:{$PORT} {
+horde.snowfall.games:443 {
 	# Health check
 	respond /health "Caddy is working" 200
 
