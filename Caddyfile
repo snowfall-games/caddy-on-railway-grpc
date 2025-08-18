@@ -11,9 +11,7 @@ horde.snowfall.games:443 {
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
 	# Simple health check (plain text)
-	handle_path /health {
-		respond "OK" 200
-	}
+	respond /health "OK" 200
 
 	log {
 		output stdout
