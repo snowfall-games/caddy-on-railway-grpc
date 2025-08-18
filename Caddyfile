@@ -1,16 +1,29 @@
 {
 	auto_https off
+	servers {
+		protocols h1 h2c h2
+	}
 }
 
-http://horde.snowfall.games:{$PORT} {
-	respond /health "OK" 200
+horde.snowfall.games:{$PORT} {
+	respond /health "Caddy is working" 200
 	
-	@grpc header_regexp grpc Content-Type ^application/grpc
-	reverse_proxy @grpc snowfall-horde.railway.internal:5002 {
-		transport http { 
-			versions 2c 
+	# More robust gRPC detection
+	@grpc {
+		header Content-Type application/grpc*
+		protocol grpc
+	}
+	
+	handle @grpc {
+		reverse_proxy snowfall-horde.railway.internal:5002 {
+			transport http {
+				versions h2c 2
+			}
 		}
 	}
 
-	reverse_proxy snowfall-horde.railway.internal:5000
+	# Fallback HTTP
+	handle {
+		reverse_proxy snowfall-horde.railway.internal:5000
+	}
 }
