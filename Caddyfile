@@ -1,9 +1,12 @@
 horde.snowfall.games {
 	# gRPC traffic
 	@grpc header_regexp grpc Content-Type ^application/grpc
+	
 	handle @grpc {
 		reverse_proxy ${HORDE_GRPC_SERVICE_URL} {
-			transport http { versions 2c }
+			transport http { 
+				versions 2c 
+			}
 			header_up Host {upstream_hostport}
 			header_up X-Forwarded-Host {host}
 			header_up X-Forwarded-Proto {scheme}
