@@ -8,10 +8,9 @@
 		level DEBUG
 	}
 
-	# gRPC matcher (HTTP/2 requests with gRPC content-type)
+	# gRPC matcher
 	@grpc {
-		header Content-Type *application/grpc*
-		protocol h2
+		header Content-Type application/grpc*
 	}
 
 	route {
@@ -22,12 +21,7 @@
 
 		# gRPC → h2c upstream (no TLS between Caddy and app)
 		handle @grpc {
-			reverse_proxy h2c://{$HORDE_HOST}:5002 {
-				transport http {
-					versions h2c
-				}
-				flush_interval -1
-			}
+			reverse_proxy h2c://{$HORDE_HOST}:5002
 		}
 
 		# Everything else → HTTP upstream
