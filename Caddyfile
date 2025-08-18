@@ -1,47 +1,42 @@
 {
-	# We terminate TLS with a Cloudflare Origin Cert provided via env and written to /config/certs
+	# h1 + h2 is enough on the public listener; h2c is for cleartext listeners.
 	servers {
-		protocols h1 h2 h2c
+		protocols h1 h2
 	}
 	debug
 }
 
 horde.snowfall.games:443 {
-	# Health check
-	respond /health "Caddy is working" 200
-
-	# Serve TLS using the origin cert
+	# Terminate TLS using the Cloudflare Origin cert
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
-	# Access logs for visibility
+	# Simple health check
+	respond /health "Caddy is working" 200
+
 	log {
 		output stdout
 		format console
 	}
 
-	# Detect gRPC requests
+	# gRPC matcher (HTTP/2 requests with gRPC content-type)
 	@grpc {
-		header Content-Type application/grpc*
-		header TE trailers
+		header Content-Type *application/grpc*
 	}
 
-	# gRPC over h2c upstream
+	# gRPC → h2c upstream (no TLS between Caddy and app)
 	handle @grpc {
-		reverse_proxy {$HORDE_HOST}:5002 {
-			transport http {
-				versions h2c
-			}
-			# Ensure upstream sees proper authority/host for gRPC
-			header_up Host {upstream_hostport}
-			header_up TE trailers
+		reverse_proxy h2c://{$HORDE_HOST}:5002 {
+			# Preserve original authority; gRPC likes this
+			# (remove the next line unless your app specifically needs upstream host)
+			# header_up Host {host}
+
+			# TE is HTTP/1.1-specific; not needed for h2
 			flush_interval -1
 		}
 	}
 
-	# HTTP upstream
+	# Everything else → HTTP upstream
 	handle {
-		reverse_proxy {$HORDE_HOST}:5000 {
-			header_up Host {upstream_hostport}
-		}
+		reverse_proxy http://{$HORDE_HOST}:5000
 	}
 }
