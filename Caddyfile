@@ -1,19 +1,24 @@
 {
-	auto_https off
+	# We terminate TLS with a Cloudflare Origin Cert provided via env and written to /config/certs
 	servers {
-		protocols h1 h2c h2
+		protocols h1 h2 h2c
 	}
 }
 
-http://horde.snowfall.games:{$PORT} {
+horde.snowfall.games:443 {
+	# Health check
 	respond /health "Caddy is working" 200
-	
-	# More robust gRPC detection
+
+	# Serve TLS using the origin cert
+	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
+
+	# Detect gRPC requests
 	@grpc {
 		header Content-Type application/grpc*
 		protocol grpc
 	}
-	
+
+	# gRPC over h2c upstream
 	handle @grpc {
 		reverse_proxy snowfall-horde.railway.internal:5002 {
 			transport http {
@@ -22,7 +27,7 @@ http://horde.snowfall.games:{$PORT} {
 		}
 	}
 
-	# Fallback HTTP
+	# HTTP upstream
 	handle {
 		reverse_proxy snowfall-horde.railway.internal:5000
 	}
