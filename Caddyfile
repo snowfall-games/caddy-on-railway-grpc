@@ -3,8 +3,7 @@
 }
 
 http://horde.snowfall.games:{$PORT} {
-	log
-	respond /health "Horde API is working" 200
+	respond /health "OK" 200
 	
 	@grpc header_regexp grpc Content-Type ^application/grpc
 	reverse_proxy @grpc snowfall-horde.railway.internal:5002 {
