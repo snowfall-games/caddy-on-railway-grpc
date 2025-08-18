@@ -1,12 +1,4 @@
-{
-	# h1 + h2 is enough on the public listener; h2c is for cleartext listeners.
-	servers {
-		protocols h1 h2 h2c
-	}
-	debug
-}
-
-horde.snowfall.games:443 {
+:${PORT} {
 	# Terminate TLS using the Cloudflare Origin cert
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
@@ -23,7 +15,6 @@ horde.snowfall.games:443 {
 	}
 
 	route {
-		# Health first so it never falls through (exact path)
 		respond /health "OK" 200
 
 		# gRPC → h2c upstream (no TLS between Caddy and app)
