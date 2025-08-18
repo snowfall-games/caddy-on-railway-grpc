@@ -23,14 +23,15 @@ horde.snowfall.games:443 {
 	# gRPC matcher (HTTP/2 requests with gRPC content-type)
 	@grpc {
 		header Content-Type *application/grpc*
+		protocol h2
 	}
 
 	# gRPC → h2c upstream (no TLS between Caddy and app)
 	handle @grpc {
 		reverse_proxy h2c://{$HORDE_HOST}:5002 {
-			# Preserve original authority; gRPC likes this
-			# (remove the next line unless your app specifically needs upstream host)
-			# header_up Host {host}
+			# Preserve original authority; gRPC prefers this
+			header_up :authority {http.request.host}
+			header_up Host {http.request.host}
 
 			# TE is HTTP/1.1-specific; not needed for h2
 			flush_interval -1
