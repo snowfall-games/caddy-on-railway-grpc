@@ -1,28 +1,21 @@
-horde.snowfall.games {
+{
 	auto_https off
+}
 
-	# gRPC traffic
+horde.snowfall.games {
+	# gRPC
 	@grpc header_regexp grpc Content-Type ^application/grpc
-	
-	handle @grpc {
-		reverse_proxy ${HORDE_GRPC_SERVICE_URL} {
-			transport http { 
-				versions 2c 
-			}
-			header_up Host {upstream_hostport}
-			header_up X-Forwarded-Host {host}
-			header_up X-Forwarded-Proto {scheme}
-			header_up X-Real-IP {remote_host}
+	reverse_proxy @grpc ${HORDE_GRPC_SERVICE_URL} {
+		transport http { 
+			versions 2c 
 		}
+		header_up X-Forwarded-Host {host}
+		header_up X-Forwarded-Proto {scheme}
 	}
 
 	# Fallback HTTP
-	handle {
-		reverse_proxy ${HORDE_SERVICE_URL} {
-			header_up Host {upstream_hostport}
-			header_up X-Forwarded-Host {host}
-			header_up X-Forwarded-Proto {scheme}
-			header_up X-Real-IP {remote_host}
-		}
+	reverse_proxy ${HORDE_SERVICE_URL} {
+		header_up X-Forwarded-Host {host}
+		header_up X-Forwarded-Proto {scheme}
 	}
 }
