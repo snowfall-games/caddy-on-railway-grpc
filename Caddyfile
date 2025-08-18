@@ -5,7 +5,7 @@
 	}
 }
 
-horde.snowfall.games:{$PORT} {
+http://horde.snowfall.games:{$PORT} {
 	respond /health "Caddy is working" 200
 	
 	# More robust gRPC detection
