@@ -2,17 +2,15 @@
 	auto_https off
 }
 
-horde.snowfall.games {
-	respond /health "Caddy is working" 200
-
-	# gRPC
+horde.snowfall.games:{$PORT} {
+	respond /health "Horde API is working" 200
+	
 	@grpc header_regexp grpc Content-Type ^application/grpc
-	reverse_proxy @grpc snowfall-horde:5002 {
+	reverse_proxy @grpc snowfall-horde.railway.internal:5002 {
 		transport http { 
 			versions 2c 
 		}
 	}
 
-	# Fallback HTTP
-	reverse_proxy snowfall-horde:5000
+	reverse_proxy snowfall-horde.railway.internal:5000
 }
