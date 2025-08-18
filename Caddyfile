@@ -8,9 +8,9 @@
 		level DEBUG
 	}
 
-	# gRPC matcher
+	# gRPC matcher - test exact match
 	@grpc {
-		header Content-Type application/grpc*
+		header Content-Type "application/grpc"
 	}
 
 	route {
@@ -19,11 +19,9 @@
 			respond "OK" 200
 		}
 
-		# gRPC → h2c upstream (no TLS between Caddy and app)  
+		# Debug: Test if gRPC matcher works
 		handle @grpc {
-			reverse_proxy http://{$HORDE_HOST}:5002 {
-				header_up Host {$HORDE_HOST}:5002
-			}
+			respond "GRPC MATCH FOUND - Content-Type: {http.request.header.content-type}" 200
 		}
 
 		# Everything else → HTTP upstream
