@@ -3,6 +3,7 @@
 	servers {
 		protocols h1 h2 h2c
 	}
+	debug
 }
 
 horde.snowfall.games:443 {
@@ -11,6 +12,12 @@ horde.snowfall.games:443 {
 
 	# Serve TLS using the origin cert
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
+
+	# Access logs for visibility
+	log {
+		output stdout
+		format console
+	}
 
 	# Detect gRPC requests
 	@grpc {
