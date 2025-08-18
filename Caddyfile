@@ -10,9 +10,6 @@ horde.snowfall.games:443 {
 	# Terminate TLS using the Cloudflare Origin cert
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
-	# Simple health check (plain text)
-	respond /health "OK" 200
-
 	log {
 		output stdout
 		format console
@@ -25,20 +22,25 @@ horde.snowfall.games:443 {
 		protocol h2
 	}
 
-	# gRPC → h2c upstream (no TLS between Caddy and app)
-	handle @grpc {
-		reverse_proxy h2c://{$HORDE_HOST}:5002 {
-			transport http {
-				versions h2c
-			}
-
-			# TE is HTTP/1.1-specific; not needed for h2
-			flush_interval -1
+	route {
+		# Health first so it never falls through
+		handle_path /health {
+			respond "OK" 200
 		}
-	}
 
-	# Everything else → HTTP upstream
-	handle {
-		reverse_proxy http://{$HORDE_HOST}:5000
+		# gRPC → h2c upstream (no TLS between Caddy and app)
+		handle @grpc {
+			reverse_proxy h2c://{$HORDE_HOST}:5002 {
+				transport http {
+					versions h2c
+				}
+				flush_interval -1
+			}
+		}
+
+		# Everything else → HTTP upstream
+		handle {
+			reverse_proxy http://{$HORDE_HOST}:5000
+		}
 	}
 }
