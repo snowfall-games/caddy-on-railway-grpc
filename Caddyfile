@@ -19,9 +19,9 @@
 			respond "OK" 200
 		}
 
-		# Debug: Test if gRPC matcher works
+		# gRPC → h2c upstream (no TLS between Caddy and app)  
 		handle @grpc {
-			respond "GRPC MATCH FOUND - Content-Type: {http.request.header.content-type}" 200
+			reverse_proxy h2c://{$HORDE_HOST}:5002
 		}
 
 		# Everything else → HTTP upstream
