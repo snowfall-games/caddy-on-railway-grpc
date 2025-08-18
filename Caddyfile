@@ -5,12 +5,12 @@
 horde.snowfall.games {
 	# gRPC
 	@grpc header_regexp grpc Content-Type ^application/grpc
-	reverse_proxy @grpc ${HORDE_GRPC_SERVICE_URL} {
+	reverse_proxy @grpc snowfall-horde.railway.internal:5002 {
 		transport http { 
 			versions 2c 
 		}
 	}
 
 	# Fallback HTTP
-	reverse_proxy ${HORDE_SERVICE_URL}
+	reverse_proxy snowfall-horde.railway.internal:5000
 }
