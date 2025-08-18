@@ -9,13 +9,8 @@ horde.snowfall.games {
 		transport http { 
 			versions 2c 
 		}
-		header_up X-Forwarded-Host {host}
-		header_up X-Forwarded-Proto {scheme}
 	}
 
 	# Fallback HTTP
-	reverse_proxy ${HORDE_SERVICE_URL} {
-		header_up X-Forwarded-Host {host}
-		header_up X-Forwarded-Proto {scheme}
-	}
+	reverse_proxy ${HORDE_SERVICE_URL}
 }
