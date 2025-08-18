@@ -18,6 +18,7 @@ horde.snowfall.games:443 {
 	log {
 		output stdout
 		format console
+		level DEBUG
 	}
 
 	# gRPC matcher (HTTP/2 requests with gRPC content-type)
@@ -33,7 +34,6 @@ horde.snowfall.games:443 {
 				versions h2c
 			}
 
-			debug
 			# TE is HTTP/1.1-specific; not needed for h2
 			flush_interval -1
 		}
