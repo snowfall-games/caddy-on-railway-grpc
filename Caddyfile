@@ -15,7 +15,10 @@
 	}
 
 	route {
-		respond /health "OK" 200
+		# Health check endpoint
+		handle /health {
+			respond "OK" 200
+		}
 
 		# gRPC → h2c upstream (no TLS between Caddy and app)
 		handle @grpc {
