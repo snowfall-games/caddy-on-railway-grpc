@@ -3,6 +3,7 @@
 }
 
 horde.snowfall.games:{$PORT} {
+	log
 	respond /health "Horde API is working" 200
 	
 	@grpc header_regexp grpc Content-Type ^application/grpc
