@@ -28,7 +28,10 @@ horde.snowfall.games:443 {
 
 	# gRPC → h2c upstream (no TLS between Caddy and app)
 	handle @grpc {
-		reverse_proxy h2c://{$HORDE_HOST}:5002 {
+		reverse_proxy {$HORDE_HOST}:5002 {
+			transport http {
+				versions h2c
+			}
 			# Preserve original authority; gRPC prefers this
 			header_up :authority {http.request.host}
 			header_up Host {http.request.host}
