@@ -1,17 +1,3 @@
-# Private IP for gRPC (from WARP clients)
-10.0.0.100:5002 {
-	# No TLS needed for private network traffic
-	
-	# All traffic to this private IP goes to gRPC backend
-	reverse_proxy h2c://{$HORDE_HOST}:5002 {
-		transport http {
-			versions h2c
-		}
-		flush_interval -1
-		header_up -Content-Length
-		header_up Te "trailers"
-	}
-}
 
 :{$PORT} {
 	# Terminate TLS using the Cloudflare Origin cert
