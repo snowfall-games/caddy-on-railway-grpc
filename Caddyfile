@@ -19,10 +19,15 @@
 			respond "OK" 200
 		}
 
-		# gRPC → h2c upstream (minimal config)
+		# gRPC → h2c upstream 
 		handle @grpc {
 			reverse_proxy h2c://{$HORDE_HOST}:5002 {
+				transport http {
+					versions h2c
+				}
 				flush_interval -1
+				buffer_requests off
+				buffer_responses off
 			}
 		}
 
