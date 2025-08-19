@@ -22,7 +22,12 @@
 		# gRPC → h2c upstream (TLS terminated by Caddy, forward as cleartext HTTP/2)
 		handle @grpc {
 			reverse_proxy h2c://{$HORDE_HOST}:5002 {
+				transport http {
+					versions h2c
+				}
 				flush_interval -1
+				header_up -Content-Length
+				header_up Te "trailers"
 			}
 		}
 
