@@ -26,7 +26,6 @@
 					versions h2c
 					read_timeout 0
 					write_timeout 0
-					idle_timeout 300s
 				}
 				flush_interval -1
 				header_up -Content-Length
