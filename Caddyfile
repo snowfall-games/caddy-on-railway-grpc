@@ -19,7 +19,7 @@
 			respond "OK" 200
 		}
 
-		# gRPC → h2c upstream (enhanced streaming support)
+		# gRPC → h2c upstream (maximum streaming support)
 		handle @grpc {
 			reverse_proxy h2c://{$HORDE_HOST}:5002 {
 				transport http {
@@ -28,12 +28,21 @@
 					write_timeout 0
 				}
 				flush_interval -1
+				# Essential gRPC headers
 				header_up -Content-Length
-				header_up -Transfer-Encoding
+				header_up -Transfer-Encoding  
 				header_up Te "trailers"
-				# Remove response headers that can interfere with streaming
+				header_up Grpc-Accept-Encoding "identity,gzip"
+				# Anti-buffering response headers
 				header_down -Content-Length
 				header_down -Transfer-Encoding
+				header_down -Cache-Control
+				header_down -Pragma
+				header_down -Expires
+				header_down Cache-Control "no-cache, no-store, must-revalidate"
+				header_down Pragma "no-cache"
+				header_down Expires "0"
+				header_down X-Accel-Buffering "no"
 			}
 		}
 
