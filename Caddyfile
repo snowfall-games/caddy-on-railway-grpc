@@ -26,8 +26,6 @@
 					versions h2c
 				}
 				flush_interval -1
-				buffer_requests off
-				buffer_responses off
 			}
 		}
 
