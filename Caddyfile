@@ -1,5 +1,28 @@
 
-:{$PORT} {
+# gRPC-only subdomain (works around Cloudflare gRPC limitations)
+grpc.snowfall.games {
+	# Terminate TLS using the Cloudflare Origin cert
+	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
+	
+	log {
+		output stdout
+		format console
+		level DEBUG
+	}
+	
+	# All traffic to gRPC subdomain goes to gRPC backend
+	reverse_proxy h2c://{$HORDE_HOST}:5002 {
+		transport http {
+			versions h2c
+		}
+		flush_interval -1
+		header_up -Content-Length
+		header_up Te "trailers"
+	}
+}
+
+# Main domain for web traffic
+horde.snowfall.games, :{$PORT} {
 	# Terminate TLS using the Cloudflare Origin cert
 	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
@@ -9,7 +32,7 @@
 		level DEBUG
 	}
 
-	# gRPC matcher - test exact match
+	# gRPC matcher (for any gRPC traffic that hits main domain)
 	@grpc {
 		header Content-Type "application/grpc"
 	}
@@ -20,16 +43,9 @@
 			respond "OK" 200
 		}
 
-		# gRPC → h2c upstream (TLS terminated by Caddy, forward as cleartext HTTP/2)
+		# Redirect gRPC traffic to gRPC subdomain
 		handle @grpc {
-			reverse_proxy h2c://{$HORDE_HOST}:5002 {
-				transport http {
-					versions h2c
-				}
-				flush_interval -1
-				header_up -Content-Length
-				header_up Te "trailers"
-			}
+			redir https://grpc.snowfall.games{uri} 307
 		}
 
 		# Everything else → HTTP upstream (disable caching)
