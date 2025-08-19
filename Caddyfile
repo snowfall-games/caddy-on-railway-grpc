@@ -19,16 +19,12 @@
 			respond "OK" 200
 		}
 
-		# gRPC → h2c upstream 
+		# gRPC → upstream (let backend handle protocol)
 		handle @grpc {
-			reverse_proxy h2c://{$HORDE_HOST}:5002 {
-				transport http {
-					versions h2c
-					read_timeout 30s
-					write_timeout 30s
-				}
+			reverse_proxy http://{$HORDE_HOST}:5002 {
 				flush_interval -1
 				header_up -Content-Length
+				header_up -Transfer-Encoding
 			}
 		}
 
