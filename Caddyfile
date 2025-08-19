@@ -35,9 +35,13 @@
 			}
 		}
 
-		# Everything else → HTTP upstream
+		# Everything else → HTTP upstream (disable caching)
 		handle {
-			reverse_proxy http://{$HORDE_HOST}:5000
+			reverse_proxy http://{$HORDE_HOST}:5000 {
+				header_down Cache-Control "no-cache, no-store, must-revalidate"
+				header_down Pragma "no-cache"
+				header_down Expires "0"
+			}
 		}
 	}
 }
