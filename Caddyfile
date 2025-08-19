@@ -26,7 +26,6 @@
 					versions h2c
 					read_timeout 30s
 					write_timeout 30s
-					max_response_header_size 16KB
 				}
 				flush_interval -1
 				header_up -Content-Length
