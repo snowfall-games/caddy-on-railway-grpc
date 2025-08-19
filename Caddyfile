@@ -19,18 +19,9 @@
 			respond "OK" 200
 		}
 
-		# gRPC → h2c upstream (no TLS between Caddy and app)  
+		# gRPC → h2c upstream (minimal config)
 		handle @grpc {
-			reverse_proxy {$HORDE_HOST}:5002 {
-				transport http {
-					versions h2c
-					read_timeout 0
-					write_timeout 0
-					dial_timeout 10s
-				}
-				header_up -Content-Length
-				header_up Connection {http.request.header.connection}
-				header_up Upgrade {http.request.header.upgrade}
+			reverse_proxy h2c://{$HORDE_HOST}:5002 {
 				flush_interval -1
 			}
 		}
