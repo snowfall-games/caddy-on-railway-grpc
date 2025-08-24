@@ -3,7 +3,7 @@
     "http": {
       "servers": {
         "main": {
-          "listen": [":{$PORT}"],
+          "listen": [":${PORT}"],
           "logs": {
             "default_logger_name": "http_server",
             "logger_names": {
@@ -42,7 +42,7 @@
                   },
                   "upstreams": [
                     {
-                      "dial": "{$HORDE_HOST}:5002"
+                      "dial": "${HORDE_HOST}:5002"
                     }
                   ]
                 }
@@ -54,7 +54,7 @@
                   "handler": "reverse_proxy",
                   "upstreams": [
                     {
-                      "dial": "{$HORDE_HOST}:5000"
+                      "dial": "${HORDE_HOST}:5000"
                     }
                   ]
                 }
@@ -75,7 +75,7 @@
                   "handler": "proxy",
                   "upstreams": [
                     {
-                      "dial": "{$HORDE_HOST}:8080"
+                      "dial": "${HORDE_HOST}:8080"
                     }
                   ]
                 }
