@@ -1,6 +1,6 @@
 :{$PORT} {
 	# Terminate TLS using the Cloudflare Origin cert
-	tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
+	# tls /config/certs/cf-origin.crt /config/certs/cf-origin.key
 
 	log {
 		output stdout
@@ -21,38 +21,12 @@
 
 		# gRPC → h2c upstream (maximum streaming support)
 		handle @grpc {
-			reverse_proxy h2c://{$HORDE_HOST}:5002 {
-				transport http {
-					versions h2c
-					read_timeout 0
-					write_timeout 0
-				}
-				flush_interval -1
-				# Essential gRPC headers
-				header_up -Content-Length
-				header_up -Transfer-Encoding  
-				header_up Te "trailers"
-				header_up Grpc-Accept-Encoding "identity,gzip"
-				# Anti-buffering response headers
-				header_down -Content-Length
-				header_down -Transfer-Encoding
-				header_down -Cache-Control
-				header_down -Pragma
-				header_down -Expires
-				header_down Cache-Control "no-cache, no-store, must-revalidate"
-				header_down Pragma "no-cache"
-				header_down Expires "0"
-				header_down X-Accel-Buffering "no"
-			}
+			reverse_proxy h2c://{$HORDE_HOST}:5002
 		}
 
 		# Everything else → HTTP upstream (disable caching)
 		handle {
-			reverse_proxy http://{$HORDE_HOST}:5000 {
-				header_down Cache-Control "no-cache, no-store, must-revalidate"
-				header_down Pragma "no-cache"
-				header_down Expires "0"
-			}
+			reverse_proxy http://{$HORDE_HOST}:5000
 		}
 	}
 }
