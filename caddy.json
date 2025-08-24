@@ -28,7 +28,7 @@
                   "handler": "proxy",
                   "upstreams": [
                     {
-                      "dial": ["${HORDE_HOST}:8080"]
+                      "dial": ["localhost:8080"]
                     }
                   ]
                 }
