@@ -1,11 +1,49 @@
 {
   "apps": {
+    "layer4": {
+      "servers": {
+        "multiplexer": {
+          "listen": [":${PORT}"],
+          "routes": [
+            {
+              "match": [
+                {
+                  "http": []
+                }
+              ],
+              "handle": [
+                {
+                  "handler": "proxy",
+                  "upstreams": [
+                    {
+                      "dial": ["localhost:8080"]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "handle": [
+                {
+                  "handler": "proxy",
+                  "upstreams": [
+                    {
+                      "dial": ["${HORDE_HOST}:8080"]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
     "http": {
       "servers": {
-        "main": {
-          "listen": [":${PORT}"],
+        "internal": {
+          "listen": [":8080"],
           "automatic_https": {
-            "disable_redirects": true
+            "disable": true
           },
           "routes": [
             {
@@ -64,27 +102,6 @@
                   "upstreams": [
                     {
                       "dial": "${HORDE_HOST}:5000"
-                    }
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      }
-    },
-    "layer4": {
-      "servers": {
-        "tcp_proxy": {
-          "listen": [":8080"],
-          "routes": [
-            {
-              "handle": [
-                {
-                  "handler": "proxy",
-                  "upstreams": [
-                    {
-                      "dial": ["${HORDE_HOST}:8080"]
                     }
                   ]
                 }
